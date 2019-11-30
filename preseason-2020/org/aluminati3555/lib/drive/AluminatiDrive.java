@@ -72,6 +72,8 @@ public class AluminatiDrive implements AluminatiCriticalDevice, FollowsArc {
     private double controlCoefficient;
     private boolean inverted;
 
+    private EncoderMode encoderMode;
+
     /**
      * Returns the state of the drive
      * 
@@ -166,6 +168,13 @@ public class AluminatiDrive implements AluminatiCriticalDevice, FollowsArc {
     }
 
     /**
+     * Returns the current encoder mode
+     */
+    public EncoderMode getEncoderMode() {
+        return encoderMode;
+    }
+
+    /**
      * Sets the control mode to percent output and to 0
      */
     private synchronized void resetMasters() {
@@ -183,6 +192,7 @@ public class AluminatiDrive implements AluminatiCriticalDevice, FollowsArc {
         }
 
         // Configure talons for trajectory following
+        encoderMode = EncoderMode.TRAJECTORY_FOLLOWING;
         AluminatiUtil.configTalonsTrajectoryFollowing(left.getMasterTalon(), right.getMasterTalon(), gyro);
 
         stopTrajectory();
@@ -316,6 +326,7 @@ public class AluminatiDrive implements AluminatiCriticalDevice, FollowsArc {
 
         // Configure talons for path following
         AluminatiUtil.configTalonsPathFollowing(left.getMasterTalon(), right.getMasterTalon());
+        encoderMode = EncoderMode.PATH_FOLLOWING;
 
         // Stop a path if there is one
         stopPath();
@@ -483,6 +494,7 @@ public class AluminatiDrive implements AluminatiCriticalDevice, FollowsArc {
 
         // Configure for path following by default
         AluminatiUtil.configTalonsPathFollowing(left.getMasterTalon(), right.getMasterTalon());
+        encoderMode = EncoderMode.PATH_FOLLOWING;
 
         left.getMaster().set(ControlMode.PercentOutput, driveHelper.getLeftPower());
         right.getMaster().set(ControlMode.PercentOutput, driveHelper.getRightPower());
@@ -537,5 +549,9 @@ public class AluminatiDrive implements AluminatiCriticalDevice, FollowsArc {
 
     public enum DriveState {
         OPEN_LOOP, TRAJECTORY_FOLLOWING, PATH_FOLLOWING
+    }
+
+    public enum EncoderMode {
+        TRAJECTORY_FOLLOWING, PATH_FOLLOWING
     }
 }
