@@ -302,7 +302,7 @@ public class AluminatiDrive implements AluminatiCriticalDevice, FollowsArc {
      */
     public void setRightVelocityInchesPerSecond(double velocity) {
         double output = AluminatiUtil.convertRPMToNativeUnits(AluminatiUtil.inchesPerSecondToRPM(velocity));
-        left.getMaster().set(ControlMode.Velocity, output);
+        right.getMaster().set(ControlMode.Velocity, output);
     }
 
     /**
