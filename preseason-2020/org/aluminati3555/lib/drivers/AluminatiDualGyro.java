@@ -67,4 +67,9 @@ public class AluminatiDualGyro implements AluminatiGyro {
         gyro1.setHeading(heading);
         gyro2.setHeading(heading);
     }
+
+    public AluminatiDualGyro(AluminatiGyro gyro1, AluminatiGyro gyro2) {
+        this.gyro1 = gyro1;
+        this.gyro2 = gyro2;
+    }
 }

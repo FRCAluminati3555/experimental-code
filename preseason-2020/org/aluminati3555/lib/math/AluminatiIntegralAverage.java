@@ -23,7 +23,8 @@
 package org.aluminati3555.lib.math;
 
 /**
- * This class helps calculate the average of a series of numbers using an integral
+ * This class helps calculate the average of a series of numbers using an
+ * integral
  * 
  * @author Caleb Heydon
  */
@@ -42,8 +43,13 @@ public class AluminatiIntegralAverage {
      * Adds a number to the integral
      */
     public double add(double x) {
-        sum += x;
-        i += 1;
+        if (i == Integer.MAX_VALUE) {
+            sum = x;
+            i = 1;
+        } else {
+            sum += x;
+            i += 1;
+        }
 
         return getAverage();
     }
