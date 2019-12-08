@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2018 Team319
+ * Copyright (c) 2019 Team 3555
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,21 +20,31 @@
  * SOFTWARE.
  */
 
-package com.team319.follower;
+package org.aluminati3555.lib.math;
 
-//Generic Motion Profile Class
-public class SrxMotionProfile {
+/**
+ * This class helps calculate the average of a series of numbers using an integral
+ * 
+ * @author Caleb Heydon
+ */
+public class AluminatiIntegralAverage {
+    private double sum;
+    private int i;
 
-	public int numPoints;
-	// Position (rotations) Velocity (RPM) Duration (ms)
-	public double[][] points;
+    /**
+     * Returns the current average
+     */
+    public double getAverage() {
+        return sum / i;
+    }
 
-	public SrxMotionProfile() {
-		
-	}
+    /**
+     * Adds a number to the integral
+     */
+    public double add(double x) {
+        sum += x;
+        i += 1;
 
-	public SrxMotionProfile(int numPoints, double[][] points) {
-		this.numPoints = numPoints;
-		this.points = points;
-	}
+        return getAverage();
+    }
 }

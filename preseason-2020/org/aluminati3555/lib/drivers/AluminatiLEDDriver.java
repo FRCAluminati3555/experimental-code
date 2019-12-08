@@ -33,6 +33,11 @@ public class AluminatiLEDDriver {
     private Spark ledDriver;
     private Mode mode;
 
+    @Override
+    public String toString() {
+        return "[LEDDriver]";
+    }
+
     /**
      * Returns the current mode of the led driver
      */

@@ -21,7 +21,7 @@ public class AluminatiRobotStateEstimator implements Loop {
 
     @Override
     public String toString() {
-        return "[AluminatiRobotStateEstimator]";
+        return "[RobotStateEstimator]";
     }
 
     public void onStart(double timestamp) {

@@ -29,6 +29,7 @@ import org.aluminati3555.lib.drivers.AluminatiJoystick;
 import org.aluminati3555.lib.drivers.AluminatiPigeon;
 import org.aluminati3555.lib.loops.Loop;
 import org.aluminati3555.lib.loops.Looper;
+import org.aluminati3555.lib.net.AluminatiTunable;
 import org.aluminati3555.lib.drivers.AluminatiRelay;
 import org.aluminati3555.lib.drivers.AluminatiTalonSRX;
 import org.aluminati3555.lib.drivers.AluminatiVictorSPX;
@@ -55,7 +56,6 @@ import com.team254.lib.geometry.Rotation2d;
 
 import org.aluminati3555.frc2019.auto.ModeDoNothing;
 import org.aluminati3555.frc2019.auto.ModeExamplePath;
-import org.aluminati3555.frc2019.auto.ModeExampleTrajectory;
 import org.aluminati3555.frc2019.auto.ModeExampleTurn;
 import org.aluminati3555.frc2019.auto.ModeGrabHatch;
 import org.aluminati3555.frc2019.auto.ModePlaceHatch;
@@ -72,7 +72,7 @@ import org.aluminati3555.frc2019.systems.HatchSystem;
 public class Robot extends AluminatiRobot {
   // Constants
   public static final String[] AUTO_MODES = { "Manual", "DoNothing", "ExampleTurn", "PlaceHatch", "GrabHatch",
-      "ExampleTrajectory", "ExamplePath"};
+      "ExamplePath" };
 
   // Robot state
   private RobotMode robotMode;
@@ -86,9 +86,6 @@ public class Robot extends AluminatiRobot {
 
   // Robot state estimator
   private AluminatiRobotStateEstimator robotStateEstimator;
-
-  // Trajectory generator
-  private TrajectoryGenerator trajectoryGenerator;
 
   // Power distribution
   private PowerDistributionPanel pdp;
@@ -108,23 +105,19 @@ public class Robot extends AluminatiRobot {
   @Override
   public void robotInit() {
     // Configure pid
-    AluminatiData.encoderF = 0.3;
-    AluminatiData.encoderP = 0.2;
-    AluminatiData.encoderI = 0.0001;
-    AluminatiData.encoderD = 0.25;
+    AluminatiData.velocityKF = 0.3;
+    AluminatiData.velocityKP = 0.2;
+    AluminatiData.velocityKI = 0.0001;
+    AluminatiData.velocityKD = 0.25;
 
-    AluminatiData.gyroF = 0.45;
-    AluminatiData.gyroP = 2.5;
-    AluminatiData.gyroI = 0.0001;
-    AluminatiData.gyroD = 0.25;
-
-    // Extra path generation parameters
-    AluminatiData.kV = 0.18;
-    AluminatiData.kA = 0.008;
-    AluminatiData.vIntercept = 0.3;
-    AluminatiData.linearInertia = 60;
-    AluminatiData.angularInertia = 120;
-    AluminatiData.angularDrag = 0.1;
+    // Add UDP listener for PID
+    new AluminatiTunable(5805) {
+      protected void update(TuningData data) {
+        AluminatiData.velocityKP = data.kP;
+        AluminatiData.velocityKI = data.kI;
+        AluminatiData.velocityKD = data.kP;
+      }
+    };
 
     // Configure pure pursuit
     AluminatiData.pathFollowingProfileKP = 5;
@@ -137,6 +130,14 @@ public class Robot extends AluminatiRobot {
     AluminatiData.pathFollowingMaxAccel = 108;
 
     AluminatiUtil.generatePathFollowingFeedforwardValues();
+
+    // Add udp listener for pure pursuit
+    new AluminatiTunable(5806) {
+      protected void update(TuningData data) {
+        AluminatiData.pathFollowingProfileKP = data.kP;
+        AluminatiData.pathFollowingProfileKI = data.kI;
+      }
+    };
 
     // Set encoder data
     AluminatiData.encoderUnitsPerRotation = 4096;
@@ -173,10 +174,6 @@ public class Robot extends AluminatiRobot {
     // Setup robot state estimator
     robotStateEstimator = new AluminatiRobotStateEstimator(robotState, driveSystem);
     looper.register(robotStateEstimator);
-
-    // Generate trajectories
-    trajectoryGenerator = new TrajectoryGenerator();
-    trajectoryGenerator.generateTrajectories();
 
     // Setup data reporter
     looper.register(new DataReporter());
@@ -380,10 +377,6 @@ public class Robot extends AluminatiRobot {
 
       autoTask = new ModeGrabHatch(driveSystem, hatchSystem, limelight);
     } else if (auto.equals(AUTO_MODES[5])) {
-      // ExampleTrajectory
-
-      autoTask = new ModeExampleTrajectory(driveSystem, trajectoryGenerator);
-    } else if (auto.equals(AUTO_MODES[6])) {
       // ExamplePath
 
       autoTask = new ModeExamplePath(robotState, driveSystem);

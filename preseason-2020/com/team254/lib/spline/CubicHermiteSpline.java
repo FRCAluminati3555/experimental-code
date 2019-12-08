@@ -47,7 +47,7 @@ public class CubicHermiteSpline extends Spline {
 
     @Override
     public double getVelocity(double t) {
-        // TODO implement this
+        // Implement this
         return 1.0;
     }
 
@@ -62,7 +62,7 @@ public class CubicHermiteSpline extends Spline {
 
     @Override
     public double getDCurvature(double t) {
-        // TODO implement this
+        // Implement this
         return 0.0;
     }
 }

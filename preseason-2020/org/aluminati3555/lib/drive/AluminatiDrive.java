@@ -30,9 +30,6 @@ import com.team254.lib.control.PathFollower.Parameters;
 import com.team254.lib.geometry.Pose2d;
 import com.team254.lib.geometry.Twist2d;
 import com.team254.lib.util.DriveSignal;
-import com.team319.follower.FollowArc;
-import com.team319.follower.FollowsArc;
-import com.team319.follower.SrxTrajectory;
 
 import org.aluminati3555.lib.data.AluminatiData;
 import org.aluminati3555.lib.drivers.AluminatiMotorGroup;
@@ -54,7 +51,7 @@ import org.aluminati3555.lib.trajectoryfollowingmotion.RobotState;
  * 
  * @author Caleb Heydon
  */
-public class AluminatiDrive implements AluminatiCriticalDevice, FollowsArc {
+public class AluminatiDrive implements AluminatiCriticalDevice {
     // Class members
     private DriveState driveState;
     private RobotState robotState;
@@ -66,13 +63,10 @@ public class AluminatiDrive implements AluminatiCriticalDevice, FollowsArc {
     private AluminatiDriveHelper driveHelper;
     private AluminatiShifter shifter;
 
-    private FollowArc follower;
     private PathFollower pathFollower;
 
     private double controlCoefficient;
     private boolean inverted;
-
-    private EncoderMode encoderMode;
 
     /**
      * Returns the state of the drive
@@ -168,79 +162,11 @@ public class AluminatiDrive implements AluminatiCriticalDevice, FollowsArc {
     }
 
     /**
-     * Returns the current encoder mode
-     */
-    public EncoderMode getEncoderMode() {
-        return encoderMode;
-    }
-
-    /**
      * Sets the control mode to percent output and to 0
      */
     private synchronized void resetMasters() {
         left.getMaster().set(ControlMode.PercentOutput, 0);
         right.getMaster().set(ControlMode.PercentOutput, 0);
-    }
-
-    /**
-     * Starts a motion profile
-     */
-    public void startTrajectory(SrxTrajectory path, boolean zeroGyro) {
-        // Stop if the drive is in path following mode
-        if (driveState == DriveState.PATH_FOLLOWING) {
-            return;
-        }
-
-        // Configure talons for trajectory following
-        encoderMode = EncoderMode.TRAJECTORY_FOLLOWING;
-        AluminatiUtil.configTalonsTrajectoryFollowing(left.getMasterTalon(), right.getMasterTalon(), gyro);
-
-        stopTrajectory();
-        follower = new FollowArc(this, path, path.flipped, false);
-
-        if (zeroGyro) {
-            gyro.zeroYaw();
-        }
-
-        driveState = DriveState.TRAJECTORY_FOLLOWING;
-        follower.start();
-    }
-
-    /**
-     * Starts a motion profile and zeros the gyro
-     */
-    public void startTrajectory(SrxTrajectory path) {
-        startTrajectory(path, true);
-    }
-
-    /**
-     * Returns true if the motion profile is done
-     */
-    public boolean isTrajectoryDone() {
-        if (follower == null) {
-            return false;
-        }
-
-        return follower.isFinished();
-    }
-
-    /**
-     * Stops the mp
-     */
-    public void stopTrajectory() {
-        if (follower != null) {
-            follower.end();
-        }
-
-        resetMasters();
-        driveState = DriveState.OPEN_LOOP;
-    }
-
-    /**
-     * Returns the follower
-     */
-    public FollowArc getFollower() {
-        return follower;
     }
 
     /**
@@ -319,14 +245,10 @@ public class AluminatiDrive implements AluminatiCriticalDevice, FollowsArc {
      * Starts a path
      */
     public void startPath(PathContainer pathContainer, double timestamp) {
-        // Stop if the drive is in motion profiling mode
-        if (driveState == DriveState.TRAJECTORY_FOLLOWING) {
-            return;
+        // Stop the current path if the drive is in path following mode
+        if (driveState == DriveState.PATH_FOLLOWING) {
+            stopPath();
         }
-
-        // Configure talons for path following
-        AluminatiUtil.configTalonsPathFollowing(left.getMasterTalon(), right.getMasterTalon());
-        encoderMode = EncoderMode.PATH_FOLLOWING;
 
         // Stop a path if there is one
         stopPath();
@@ -356,11 +278,6 @@ public class AluminatiDrive implements AluminatiCriticalDevice, FollowsArc {
      * @param timestamp
      */
     private synchronized void updatePathFollower(double timestamp) {
-        // Stop if the drive is in motion profiling mode or if pathFollower is null
-        if (driveState == DriveState.TRAJECTORY_FOLLOWING || pathFollower == null) {
-            return;
-        }
-
         if (!pathFollower.isFinished()) {
             Pose2d robotPose = robotState.getLatestFieldToVehicle().getValue();
             Twist2d command = pathFollower.update(timestamp, robotPose, robotState.getDistanceDriven(),
@@ -492,9 +409,8 @@ public class AluminatiDrive implements AluminatiCriticalDevice, FollowsArc {
 
         controlCoefficient = 1;
 
-        // Configure for path following by default
+        // Configure for path following
         AluminatiUtil.configTalonsPathFollowing(left.getMasterTalon(), right.getMasterTalon());
-        encoderMode = EncoderMode.PATH_FOLLOWING;
 
         left.getMaster().set(ControlMode.PercentOutput, driveHelper.getLeftPower());
         right.getMaster().set(ControlMode.PercentOutput, driveHelper.getRightPower());
@@ -518,10 +434,7 @@ public class AluminatiDrive implements AluminatiCriticalDevice, FollowsArc {
 
         public void onLoop(double timestamp) {
             // Set drive state
-            if (driveState == DriveState.TRAJECTORY_FOLLOWING && isTrajectoryDone()) {
-                resetMasters();
-                driveState = DriveState.OPEN_LOOP;
-            } else if (driveState == DriveState.PATH_FOLLOWING && pathFollower == null) {
+            if (driveState == DriveState.PATH_FOLLOWING && pathFollower == null) {
                 resetMasters();
                 driveState = DriveState.OPEN_LOOP;
             } else if (driveState == DriveState.PATH_FOLLOWING && isPathDone()) {
@@ -548,10 +461,6 @@ public class AluminatiDrive implements AluminatiCriticalDevice, FollowsArc {
     }
 
     public enum DriveState {
-        OPEN_LOOP, TRAJECTORY_FOLLOWING, PATH_FOLLOWING
-    }
-
-    public enum EncoderMode {
-        TRAJECTORY_FOLLOWING, PATH_FOLLOWING
+        OPEN_LOOP, PATH_FOLLOWING
     }
 }

@@ -25,6 +25,7 @@ package org.aluminati3555.lib.robot;
 import org.aluminati3555.lib.data.AluminatiData;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 
 /**
  * This is team 3555's robot base class
@@ -32,6 +33,9 @@ import edu.wpi.first.wpilibj.TimedRobot;
  * @author Caleb Heydon
  */
 public class AluminatiRobot extends TimedRobot {
+    private double lastTime;
+    private double dt;
+
     /**
      * Returns a useful string
      */
@@ -52,10 +56,32 @@ public class AluminatiRobot extends TimedRobot {
     }
 
     /**
+     * Override this method to find dt
+     */
+    @Override
+    public void loopFunc() {
+        super.loopFunc();
+
+        double time = Timer.getFPGATimestamp();
+        dt = time - lastTime;
+        lastTime = time;
+    }
+
+    /**
+     * Returns the last dt
+     * 
+     * @return
+     */
+    public double getLastDT() {
+        return dt;
+    }
+
+    /**
      * This constructor allows the delay to be changed by modifying the
      * AluminatiData.robotDelay value before calling RobotBase.startRobot()
      */
     public AluminatiRobot() {
         super(AluminatiData.robotDelay);
+        lastTime = Timer.getFPGATimestamp();
     }
 }

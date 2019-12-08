@@ -367,7 +367,7 @@ public class DifferentialDrive {
     }
 
     // Full state dynamics of the drivetrain.
-    // TODO maybe make these all optional fields and have a single solveDynamics() method that fills in the blanks?
+    // Maybe make these all optional fields and have a single solveDynamics() method that fills in the blanks?
     public static class DriveDynamics implements CSVWritable {
         public double curvature = 0.0;  // m^-1
         public double dcurvature = 0.0;  // m^-1/m

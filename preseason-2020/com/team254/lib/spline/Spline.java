@@ -26,6 +26,6 @@ public abstract class Spline {
         return new Pose2dWithCurvature(getPose2d(t), getCurvature(t), getDCurvature(t) / getVelocity(t));
     }
 
-    // TODO add toString
+    // Add toString
     // public abstract String toString();
 }

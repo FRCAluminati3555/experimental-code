@@ -33,36 +33,24 @@ package org.aluminati3555.lib.data;
  */
 public final class AluminatiData {
     // Library
-    public static final int LIBRARY_VERSION = 3;
+    public static final int LIBRARY_VERSION = 4;
 
     // Robot delay
     public static double robotDelay = 0.02; // Seconds
 
     // PID
-    public static double encoderF = 1;
-    public static double encoderP = 1;
-    public static double encoderI = 0;
-    public static double encoderD = 0;
-
-    public static double gyroF = 1;
-    public static double gyroP = 1;
-    public static double gyroI = 0;
-    public static double gyroD = 0;
-
-    public static int primaryPIDSlot = 0;
-    public static int auxPIDSlot = 1;
+    public static double velocityKF = 1;
+    public static double velocityKP = 1;
+    public static double velocityKI = 0;
+    public static double velocityKD = 0;
 
     public static int iZone = 400;
-    public static int peakOutput = 1;
 
     // Deadband
     public static double deadband = 0.00001;
 
     // Encoders
     public static int encoderUnitsPerRotation = 4096;
-
-    // Pigeon
-    public static double pigeonTurnUnitsPerDegree = 8192 / 360.0;
 
     // TalonSRX minimum firmware version
     public static int minTalonSRXFirmareVersion = 0;
@@ -73,19 +61,9 @@ public final class AluminatiData {
     // Tipping detection
     public static double minTippingAngle = 10; // Degrees
 
-    // Motion profile generation
-    public static double maxDx = 2;
-    public static double maxDy = 0.25;
-    public static double maxDTheta = Math.toRadians(5);
     public static double wheelDiamater = 4; // Inches
 
     // Drive characterization
-    public static double kV = 0.18; // V/(rad/s^2)
-    public static double kA = 0.008; // V/(rad/s)
-    public static double vIntercept = 0.3; // V
-    public static double linearInertia = 60; // Kg
-    public static double angularInertia = 120;
-    public static double angularDrag = 0.1;
     public static double scrubFactor = 1;
     public static double driveWidth = 20;  // Inches
 

@@ -36,23 +36,6 @@ import edu.wpi.first.wpilibj.PowerDistributionPanel;
  * @author Caleb Heydon
  */
 public class AluminatiLimelight implements AluminatiPoweredDevice {
-    // Modes
-    public enum LEDMode {
-        CURRENT_PIPELINE, OFF, BLINK, ON
-    }
-
-    public enum CameraMode {
-        VISION, DRIVER_CAMERA
-    }
-
-    public enum StreamMode {
-        STANDARD, PIP_MAIN, PIP_SECONDARY
-    }
-
-    public enum SnapshotMode {
-        NONE, TWO_PER_SECOND
-    }
-
     // Constants
     public static final String DEFAULT_TABLE_NAME = "limelight";
 
@@ -469,5 +452,22 @@ public class AluminatiLimelight implements AluminatiPoweredDevice {
 
         this.currentWarningThreshold = currentWarningThreshold;
         this.currentWarning = true;
+    }
+
+    // Modes
+    public enum LEDMode {
+        CURRENT_PIPELINE, OFF, BLINK, ON
+    }
+
+    public enum CameraMode {
+        VISION, DRIVER_CAMERA
+    }
+
+    public enum StreamMode {
+        STANDARD, PIP_MAIN, PIP_SECONDARY
+    }
+
+    public enum SnapshotMode {
+        NONE, TWO_PER_SECOND
     }
 }
