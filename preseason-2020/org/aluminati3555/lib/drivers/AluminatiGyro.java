@@ -20,52 +20,19 @@
  * SOFTWARE.
  */
 
-package org.aluminati3555.frc2019.auto;
-
-import org.aluminati3555.lib.auto.AluminatiAutoTask;
+package org.aluminati3555.lib.drivers;
 
 import com.team254.lib.geometry.Rotation2d;
 
-import org.aluminati3555.frc2019.systems.DriveSystem;
-
 /**
- * This auto mode makes a 90 degree turn
+ * A standard interface for a gyro
  * 
  * @author Caleb Heydon
  */
-public class ModeExampleTurn implements AluminatiAutoTask {
-    private DriveSystem driveSystem;
-    private AluminatiAutoTask task;
+public interface AluminatiGyro {
+    public boolean isOK();
 
-    public void start(double timestamp) {
-        driveSystem.getGyro().setHeading(Rotation2d.fromDegrees(0));
-        task.start(timestamp);
-    }
+    public Rotation2d getHeading();
 
-    public void update(double timestamp) {
-        task.update(timestamp);
-    }
-
-    public void stop() {
-        if (task != null) {
-            task.stop();
-        }
-    }
-
-    public void advanceState() {
-
-    }
-
-    public boolean isComplete() {
-        if (task == null) {
-            return true;
-        }
-
-        return task.isComplete();
-    }
-
-    public ModeExampleTurn(DriveSystem driveSystem) {
-        this.driveSystem = driveSystem;
-        this.task = new ActionTurnToYaw(-90, 2, driveSystem);
-    }
+    public void setHeading(Rotation2d heading);
 }

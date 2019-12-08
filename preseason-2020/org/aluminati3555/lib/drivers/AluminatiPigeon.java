@@ -23,6 +23,7 @@
 package org.aluminati3555.lib.drivers;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
+import com.team254.lib.geometry.Rotation2d;
 
 import org.aluminati3555.lib.data.AluminatiData;
 
@@ -31,40 +32,13 @@ import org.aluminati3555.lib.data.AluminatiData;
  * 
  * @author Caleb Heydon
  */
-public class AluminatiPigeon extends PigeonIMU implements AluminatiCriticalDevice {
+public class AluminatiPigeon extends PigeonIMU implements AluminatiGyro {
     /**
      * Returns a helpful string
      */
     @Override
     public String toString() {
-        return "[PigeonIMU:" + this.getDeviceID() + "]";
-    }
-
-    /**
-     * Zeros the yaw
-     */
-    public void zeroYaw() {
-        // Zero gyro
-        this.setYaw(0);
-    }
-
-    /**
-     * Does some basic initialization
-     */
-    private void setupPigeon() {
-        // Reset
-        this.configFactoryDefault();
-
-        zeroYaw();
-    }
-
-    /**
-     * Returns the yaw
-     */
-    public double getYaw() {
-        double[] gyroData = new double[3];
-        this.getYawPitchRoll(gyroData);
-        return gyroData[0];
+        return "[PigeonIMU:" + super.getDeviceID() + "]";
     }
 
     /**
@@ -97,11 +71,10 @@ public class AluminatiPigeon extends PigeonIMU implements AluminatiCriticalDevic
      * Returns true if the robot is tipping over
      */
     public boolean isTipping() {
-        double pitch = Math.abs(this.getPitch());
-        double roll = Math.abs(this.getPitch());
-        double magnitude = pitch + roll;
+        double pitch = Math.abs(getPitch());
+        double roll = Math.abs(getRoll());
 
-        if (magnitude >= AluminatiData.minTippingAngle) {
+        if (pitch >= AluminatiData.minTippingAngle || roll >= AluminatiData.minTippingAngle) {
             return true;
         } else {
             return false;
@@ -109,7 +82,34 @@ public class AluminatiPigeon extends PigeonIMU implements AluminatiCriticalDevic
     }
 
     /**
-     * Use this for when it is attached to a talonSRX
+     * Returns the heading
+     * 
+     * @return
+     */
+    public Rotation2d getHeading() {
+        return Rotation2d.fromDegrees(this.getFusedHeading());
+    }
+
+    /**
+     * Sets the heading
+     */
+    public void setHeading(Rotation2d heading) {
+        this.setFusedHeading(heading.getDegrees());
+    }
+
+    /**
+     * Does some basic initialization
+     */
+    private void setupPigeon() {
+        // Reset
+        this.configFactoryDefault();
+
+        setHeading(Rotation2d.fromDegrees(0));
+    }
+
+    /**
+     * Use this for when it is attached to a TalonSRX
+     * 
      * @param talon
      */
     public AluminatiPigeon(AluminatiTalonSRX talon) {
@@ -119,6 +119,7 @@ public class AluminatiPigeon extends PigeonIMU implements AluminatiCriticalDevic
 
     /**
      * For use with only a device number
+     * 
      * @param canID
      */
     public AluminatiPigeon(int canID) {

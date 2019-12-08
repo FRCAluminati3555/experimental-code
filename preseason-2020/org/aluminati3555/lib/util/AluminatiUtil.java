@@ -2,6 +2,7 @@ package org.aluminati3555.lib.util;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.StatusFrame;
+import com.team254.lib.geometry.Rotation2d;
 
 import org.aluminati3555.lib.data.AluminatiData;
 import org.aluminati3555.lib.drivers.AluminatiTalonSRX;
@@ -107,5 +108,15 @@ public class AluminatiUtil {
     public static void generatePathFollowingFeedforwardValues() {
         AluminatiData.pathFollowingProfileKFFV = 1 / AluminatiData.pathFollowingMaxVel;
         AluminatiData.pathFollowingProfileKFFA = 1 / AluminatiData.pathFollowingMaxAccel;
+    }
+
+    /**
+     * Finds the angle between two angles
+     */
+    public static Rotation2d averageHeadings(Rotation2d a, Rotation2d b) {
+        double cos = (a.cos() + b.cos()) / 2;
+        double sin = (a.sin() + b.sin()) / 2;
+
+        return new Rotation2d(cos, sin, true);
     }
 }

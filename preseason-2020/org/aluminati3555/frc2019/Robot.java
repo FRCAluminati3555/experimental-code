@@ -210,7 +210,7 @@ public class Robot extends AluminatiRobot {
 
     // Zero gyro if waiting for match to start
     if (!matchStarted) {
-      driveSystem.getGyro().zeroYaw();
+      driveSystem.getGyro().setHeading(Rotation2d.fromDegrees(0));
     }
 
     // Update systems

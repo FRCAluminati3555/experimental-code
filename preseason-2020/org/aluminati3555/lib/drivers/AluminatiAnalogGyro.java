@@ -20,52 +20,43 @@
  * SOFTWARE.
  */
 
-package org.aluminati3555.frc2019.auto;
-
-import org.aluminati3555.lib.auto.AluminatiAutoTask;
+package org.aluminati3555.lib.drivers;
 
 import com.team254.lib.geometry.Rotation2d;
 
-import org.aluminati3555.frc2019.systems.DriveSystem;
+import edu.wpi.first.wpilibj.AnalogGyro;
 
-/**
- * This auto mode makes a 90 degree turn
- * 
- * @author Caleb Heydon
- */
-public class ModeExampleTurn implements AluminatiAutoTask {
-    private DriveSystem driveSystem;
-    private AluminatiAutoTask task;
+public class AluminatiAnalogGyro extends AnalogGyro implements AluminatiGyro {
+    // See
+    // https://github.com/Team217/FRC-217-Libraries/blob/master/org/team217/wpi/AnalogGyro.java
+    // for offset
 
-    public void start(double timestamp) {
-        driveSystem.getGyro().setHeading(Rotation2d.fromDegrees(0));
-        task.start(timestamp);
+    private double offset;
+
+    /**
+     * Returns true if the gyro is ok
+     */
+    public boolean isOK() {
+        // There is no way to determine this
+        return true;
     }
 
-    public void update(double timestamp) {
-        task.update(timestamp);
+    /**
+     * Returns the gyro heading
+     */
+    public Rotation2d getHeading() {
+        return Rotation2d.fromDegrees(this.getAngle() + offset);
     }
 
-    public void stop() {
-        if (task != null) {
-            task.stop();
-        }
+    /**
+     * Sets the gyro heading
+     */
+    public void setHeading(Rotation2d heading) {
+        this.reset();
+        this.offset = heading.getDegrees();
     }
 
-    public void advanceState() {
-
-    }
-
-    public boolean isComplete() {
-        if (task == null) {
-            return true;
-        }
-
-        return task.isComplete();
-    }
-
-    public ModeExampleTurn(DriveSystem driveSystem) {
-        this.driveSystem = driveSystem;
-        this.task = new ActionTurnToYaw(-90, 2, driveSystem);
+    public AluminatiAnalogGyro(int channel) {
+        super(channel);
     }
 }

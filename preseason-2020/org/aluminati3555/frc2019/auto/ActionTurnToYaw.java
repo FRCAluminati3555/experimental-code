@@ -62,7 +62,7 @@ public class ActionTurnToYaw implements AluminatiAutoTask {
         }
 
         if (running) {
-            double output = -controller.update(targetAngle, driveSystem.getGyro().getYaw(), timestamp);
+            double output = -controller.update(targetAngle, driveSystem.getGyro().getHeading().getDegrees(), timestamp);
 
             // Stop when the robot is near the target
             if (Math.abs(output) == MIN_OUTPUT) {

@@ -34,13 +34,13 @@ import com.team254.lib.util.DriveSignal;
 import org.aluminati3555.lib.data.AluminatiData;
 import org.aluminati3555.lib.drivers.AluminatiMotorGroup;
 import org.aluminati3555.lib.drivers.AluminatiJoystick;
-import org.aluminati3555.lib.drivers.AluminatiPigeon;
 import org.aluminati3555.lib.drivers.AluminatiXboxController;
 import org.aluminati3555.lib.loops.Loop;
 import org.aluminati3555.lib.loops.Looper;
 import org.aluminati3555.lib.util.AluminatiUtil;
 
 import org.aluminati3555.lib.drivers.AluminatiCriticalDevice;
+import org.aluminati3555.lib.drivers.AluminatiGyro;
 import org.aluminati3555.lib.drivers.AluminatiTalonSRX;
 import org.aluminati3555.lib.trajectoryfollowingmotion.Kinematics;
 import org.aluminati3555.lib.trajectoryfollowingmotion.PathContainer;
@@ -58,7 +58,7 @@ public class AluminatiDrive implements AluminatiCriticalDevice {
 
     private AluminatiMotorGroup left;
     private AluminatiMotorGroup right;
-    private AluminatiPigeon gyro;
+    private AluminatiGyro gyro;
 
     private AluminatiDriveHelper driveHelper;
     private AluminatiShifter shifter;
@@ -94,7 +94,7 @@ public class AluminatiDrive implements AluminatiCriticalDevice {
     /**
      * Returns the gyro
      */
-    public AluminatiPigeon getGyro() {
+    public AluminatiGyro getGyro() {
         return gyro;
     }
 
@@ -398,7 +398,7 @@ public class AluminatiDrive implements AluminatiCriticalDevice {
     }
 
     public AluminatiDrive(Looper looper, RobotState robotState, AluminatiMotorGroup left, AluminatiMotorGroup right,
-            AluminatiPigeon gyro) {
+            AluminatiGyro gyro) {
         this.robotState = robotState;
         this.left = left;
         this.right = right;
@@ -422,7 +422,7 @@ public class AluminatiDrive implements AluminatiCriticalDevice {
     }
 
     public AluminatiDrive(Looper looper, RobotState robotState, AluminatiMotorGroup left, AluminatiMotorGroup right,
-            AluminatiPigeon gyro, AluminatiShifter shifter) {
+            AluminatiGyro gyro, AluminatiShifter shifter) {
         this(looper, robotState, left, right, gyro);
         this.shifter = shifter;
     }

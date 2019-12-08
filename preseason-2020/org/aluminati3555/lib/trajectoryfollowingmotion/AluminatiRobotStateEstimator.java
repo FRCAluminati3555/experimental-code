@@ -32,7 +32,7 @@ public class AluminatiRobotStateEstimator implements Loop {
     public void onLoop(double timestamp) {
         double leftDistance = drive.getLeftDistanceInches();
         double rightDistance = drive.getRightDistanceInches();
-        Rotation2d heading = Rotation2d.fromDegrees(drive.getGyro().getFusedHeading());
+        Rotation2d heading = drive.getGyro().getHeading();
 
         Twist2d odometryVelocity = robotState.generateOdometryFromSensors(leftDistance - lastLeftDistance,
                 rightDistance - lastRightDistance, heading);

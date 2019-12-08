@@ -36,7 +36,7 @@ public class RobotState {
         distance_driven_ = 0.0;
 
         if (drive != null) {
-            drive.getGyro().setFusedHeading(initial_field_to_vehicle.getRotation().getDegrees());
+            drive.getGyro().setHeading(initial_field_to_vehicle.getRotation());
         }
     }
 

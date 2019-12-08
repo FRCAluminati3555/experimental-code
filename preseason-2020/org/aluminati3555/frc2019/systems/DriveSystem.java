@@ -24,8 +24,8 @@ package org.aluminati3555.frc2019.systems;
 
 import org.aluminati3555.lib.drive.AluminatiDrive;
 import org.aluminati3555.lib.drivers.AluminatiMotorGroup;
+import org.aluminati3555.lib.drivers.AluminatiGyro;
 import org.aluminati3555.lib.drivers.AluminatiJoystick;
-import org.aluminati3555.lib.drivers.AluminatiPigeon;
 import org.aluminati3555.lib.loops.Looper;
 import org.aluminati3555.lib.system.AluminatiSystem;
 import org.aluminati3555.lib.trajectoryfollowingmotion.RobotState;
@@ -89,7 +89,7 @@ public class DriveSystem extends AluminatiDrive implements AluminatiSystem {
     }
 
     public DriveSystem(Looper looper, RobotState robotState, AluminatiMotorGroup left, AluminatiMotorGroup right,
-            AluminatiPigeon gyro, AluminatiJoystick driverJoystick) {
+            AluminatiGyro gyro, AluminatiJoystick driverJoystick) {
         super(looper, robotState, left, right, gyro);
 
         this.getLeftGroup().getMasterTalon().configPeakCurrentDuration(500);

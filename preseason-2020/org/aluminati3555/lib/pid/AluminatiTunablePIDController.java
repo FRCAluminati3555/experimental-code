@@ -20,52 +20,29 @@
  * SOFTWARE.
  */
 
-package org.aluminati3555.frc2019.auto;
+package org.aluminati3555.lib.pid;
 
-import org.aluminati3555.lib.auto.AluminatiAutoTask;
+import org.aluminati3555.lib.net.AluminatiTunable;
 
-import com.team254.lib.geometry.Rotation2d;
-
-import org.aluminati3555.frc2019.systems.DriveSystem;
-
-/**
- * This auto mode makes a 90 degree turn
- * 
- * @author Caleb Heydon
- */
-public class ModeExampleTurn implements AluminatiAutoTask {
-    private DriveSystem driveSystem;
-    private AluminatiAutoTask task;
-
-    public void start(double timestamp) {
-        driveSystem.getGyro().setHeading(Rotation2d.fromDegrees(0));
-        task.start(timestamp);
+public class AluminatiTunablePIDController extends AluminatiPIDController {
+    private void startListener(int port) {
+        new AluminatiTunable(port) {
+            protected void update(TuningData data) {
+                setPID(data.kP, data.kI, data.kD);
+            }
+        };
     }
 
-    public void update(double timestamp) {
-        task.update(timestamp);
+    public AluminatiTunablePIDController(int port, double kP, double kI, double kD, double iZone, double allowableError,
+            double maxOutput, double timestamp) {
+        super(kP, kI, kD, iZone, allowableError, maxOutput, timestamp);
+
+        startListener(port);
     }
 
-    public void stop() {
-        if (task != null) {
-            task.stop();
-        }
-    }
+    public AluminatiTunablePIDController(int port, double kP, double kI, double kD, double timestamp) {
+        super(kP, kI, kD, timestamp);
 
-    public void advanceState() {
-
-    }
-
-    public boolean isComplete() {
-        if (task == null) {
-            return true;
-        }
-
-        return task.isComplete();
-    }
-
-    public ModeExampleTurn(DriveSystem driveSystem) {
-        this.driveSystem = driveSystem;
-        this.task = new ActionTurnToYaw(-90, 2, driveSystem);
+        startListener(port);
     }
 }

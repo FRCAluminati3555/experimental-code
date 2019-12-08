@@ -20,52 +20,51 @@
  * SOFTWARE.
  */
 
-package org.aluminati3555.frc2019.auto;
-
-import org.aluminati3555.lib.auto.AluminatiAutoTask;
+package org.aluminati3555.lib.drivers;
 
 import com.team254.lib.geometry.Rotation2d;
 
-import org.aluminati3555.frc2019.systems.DriveSystem;
+import org.aluminati3555.lib.util.AluminatiUtil;
 
 /**
- * This auto mode makes a 90 degree turn
+ * This class allows for the precision of two gyros to be combined
  * 
  * @author Caleb Heydon
  */
-public class ModeExampleTurn implements AluminatiAutoTask {
-    private DriveSystem driveSystem;
-    private AluminatiAutoTask task;
+public class AluminatiDualGyro implements AluminatiGyro {
+    // Gyros
+    private AluminatiGyro gyro1;
+    private AluminatiGyro gyro2;
 
-    public void start(double timestamp) {
-        driveSystem.getGyro().setHeading(Rotation2d.fromDegrees(0));
-        task.start(timestamp);
+    /**
+     * Returns true if both gyros are ok
+     */
+    public boolean isOK() {
+        return (gyro1.isOK() && gyro2.isOK());
     }
 
-    public void update(double timestamp) {
-        task.update(timestamp);
-    }
+    /**
+     * Returns the best heading or an average
+     */
+    public Rotation2d getHeading() {
+        if ((gyro1.isOK() && gyro2.isOK()) || (!gyro1.isOK() && !gyro2.isOK())) {
+            // Return an average if both gyros are ok or if neither are ok
 
-    public void stop() {
-        if (task != null) {
-            task.stop();
+            return AluminatiUtil.averageHeadings(gyro1.getHeading(), gyro2.getHeading());
+        } else if (gyro1.isOK()) {
+            return gyro1.getHeading();
+        } else {
+            return gyro2.getHeading();
         }
     }
 
-    public void advanceState() {
-
-    }
-
-    public boolean isComplete() {
-        if (task == null) {
-            return true;
-        }
-
-        return task.isComplete();
-    }
-
-    public ModeExampleTurn(DriveSystem driveSystem) {
-        this.driveSystem = driveSystem;
-        this.task = new ActionTurnToYaw(-90, 2, driveSystem);
+    /**
+     * Sets the current heading
+     * 
+     * @param heading
+     */
+    public void setHeading(Rotation2d heading) {
+        gyro1.setHeading(heading);
+        gyro2.setHeading(heading);
     }
 }
