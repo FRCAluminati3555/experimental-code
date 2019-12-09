@@ -115,7 +115,7 @@ public class Robot extends AluminatiRobot {
       protected void update(TuningData data) {
         AluminatiData.velocityKP = data.kP;
         AluminatiData.velocityKI = data.kI;
-        AluminatiData.velocityKD = data.kP;
+        AluminatiData.velocityKD = data.kD;
       }
     };
 
