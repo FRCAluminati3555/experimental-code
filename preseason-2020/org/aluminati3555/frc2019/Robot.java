@@ -113,9 +113,16 @@ public class Robot extends AluminatiRobot {
     // Add UDP listener for PID
     new AluminatiTunable(5805) {
       protected void update(TuningData data) {
+        if (driveSystem == null) {
+          return;
+        }
+
         AluminatiData.velocityKP = data.kP;
         AluminatiData.velocityKI = data.kI;
         AluminatiData.velocityKD = data.kD;
+
+        AluminatiUtil.configTalonsPathFollowing(driveSystem.getLeftGroup().getMasterTalon(),
+            driveSystem.getRightGroup().getMasterTalon());
       }
     };
 

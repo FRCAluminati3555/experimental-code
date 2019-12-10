@@ -41,7 +41,6 @@ import org.aluminati3555.lib.util.AluminatiUtil;
 
 import org.aluminati3555.lib.drivers.AluminatiCriticalDevice;
 import org.aluminati3555.lib.drivers.AluminatiGyro;
-import org.aluminati3555.lib.drivers.AluminatiTalonSRX;
 import org.aluminati3555.lib.trajectoryfollowingmotion.Kinematics;
 import org.aluminati3555.lib.trajectoryfollowingmotion.PathContainer;
 import org.aluminati3555.lib.trajectoryfollowingmotion.RobotState;
@@ -103,27 +102,6 @@ public class AluminatiDrive implements AluminatiCriticalDevice {
      */
     public boolean isOK() {
         return (left.isOK() && right.isOK() && gyro.isOK() && left.isEncoderOK() && right.isEncoderOK());
-    }
-
-    /**
-     * Returns the left master talon
-     */
-    public AluminatiTalonSRX getLeft() {
-        return left.getMasterTalon();
-    }
-
-    /**
-     * Returns the right master talon
-     */
-    public AluminatiTalonSRX getRight() {
-        return right.getMasterTalon();
-    }
-
-    /**
-     * Returns the encoder value
-     */
-    public double getDistance() {
-        return right.getMasterTalon().getSelectedSensorPosition();
     }
 
     /**
