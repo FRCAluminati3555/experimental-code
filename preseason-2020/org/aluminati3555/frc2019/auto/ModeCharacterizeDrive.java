@@ -40,31 +40,37 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class ModeCharacterizeDrive implements AluminatiAutoTask {
     private DriveSystem driveSystem;
-
     private ArrayList<DataPoint> points;
 
+    private boolean done;
+    private double startTime;
     private double power;
 
     public void start(double timestamp) {
+        done = false;
+        startTime = timestamp;
         power = 0;
     }
 
     public void update(double timestamp) {
-        power += 0.001;
-        driveSystem.manualArcadeDrive(0, power);
+        if (power < 1) {
+            power += 0.005;
+        } else {
+            done = true;
+        }
+        driveSystem.manualArcadeDrive(0, -power);
 
         points.add(new DataPoint(
                 (driveSystem.getLeftVelocityInchesPerSecond() + driveSystem.getRightVelocityInchesPerSecond()) / 2,
-                power, timestamp));
+                power, timestamp - startTime));
     }
 
     public void stop() {
         driveSystem.manualArcadeDrive(0, 0);
 
         CharacterizationConstants output = DriveCharacterization.characterizeDrive(points, points);
-        SmartDashboard.putNumber("kS", output.ks);
         SmartDashboard.putNumber("kV", output.kv);
-        SmartDashboard.putNumber("kA", output.ka);
+        SmartDashboard.putNumber("kS", output.ks);
     }
 
     public void advanceState() {
@@ -72,7 +78,7 @@ public class ModeCharacterizeDrive implements AluminatiAutoTask {
     }
 
     public boolean isComplete() {
-        return false;
+        return done;
     }
 
     public ModeCharacterizeDrive(DriveSystem driveSystem) {

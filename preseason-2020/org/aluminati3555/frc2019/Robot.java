@@ -54,6 +54,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import com.team254.lib.geometry.Pose2d;
 import com.team254.lib.geometry.Rotation2d;
 
+import org.aluminati3555.frc2019.auto.ModeCharacterizeDrive;
 import org.aluminati3555.frc2019.auto.ModeDoNothing;
 import org.aluminati3555.frc2019.auto.ModeExamplePath;
 import org.aluminati3555.frc2019.auto.ModeExampleTurn;
@@ -72,7 +73,7 @@ import org.aluminati3555.frc2019.systems.HatchSystem;
 public class Robot extends AluminatiRobot {
   // Constants
   public static final String[] AUTO_MODES = { "Manual", "DoNothing", "ExampleTurn", "PlaceHatch", "GrabHatch",
-      "ExamplePath" };
+      "ExamplePath", "CharacterizeDrive" };
 
   // Robot state
   private RobotMode robotMode;
@@ -127,11 +128,11 @@ public class Robot extends AluminatiRobot {
     };
 
     // Configure pure pursuit
-    AluminatiData.pathFollowingProfileKP = 5;
+    AluminatiData.pathFollowingProfileKP = 2;
     AluminatiData.pathFollowingProfileKI = 0.0001;
-    AluminatiData.inertiaSteeringGain = 1;
-    AluminatiData.pathFollowingProfileKV = 0.1;
-    AluminatiData.pathFollowingProfileKS = 0.1;
+    AluminatiData.inertiaSteeringGain = 0;
+    AluminatiData.pathFollowingProfileKV = 0.007;
+    AluminatiData.pathFollowingProfileKS = 0.072;
 
     AluminatiData.pathFollowingMaxVel = 113;
     AluminatiData.pathFollowingMaxAccel = 108;
@@ -273,6 +274,9 @@ public class Robot extends AluminatiRobot {
 
   @Override
   public void teleopInit() {
+    // Set brake mode
+    driveSystem.brake();
+
     if (!matchStarted) {
       // Put limelight into camera mode and put leds back in pipeline mode if
       // autonomousInit() was not called first
@@ -300,8 +304,6 @@ public class Robot extends AluminatiRobot {
 
   @Override
   public void testInit() {
-    driveSystem.coast();
-
     // Turn on limelight for testing
     limelight.setPipeline(0);
 
@@ -387,6 +389,10 @@ public class Robot extends AluminatiRobot {
       // ExamplePath
 
       autoTask = new ModeExamplePath(robotState, driveSystem);
+    } else if (auto.equals(AUTO_MODES[6])) {
+      // CharacterizeDrive
+
+      autoTask = new ModeCharacterizeDrive(driveSystem);
     }
   }
 
@@ -394,18 +400,16 @@ public class Robot extends AluminatiRobot {
    * Controls the robot during auto
    */
   private void autoControl(double timestamp) {
+    // Set brake mode
+    driveSystem.brake();
+
     if (driverJoystick.getRawButtonPressed(11)) {
       // Stop task and cleanup
       autoTask.stop();
       robotMode = RobotMode.OPERATOR_CONTROL;
-
-      // Put drive in coast mode
-      driveSystem.coast();
     }
 
     if (robotMode == RobotMode.OPERATOR_CONTROL) {
-      driveSystem.coast();
-
       // Set limelight mode
       if (driverJoystick.getRawButton(1)) {
         // Enable if trigger is down
@@ -418,9 +422,6 @@ public class Robot extends AluminatiRobot {
         // Stop task and cleanup
         autoTask.stop();
         robotMode = RobotMode.OPERATOR_CONTROL;
-
-        // Put drive in coast mode
-        driveSystem.coast();
       } else {
         autoTask.update(timestamp);
       }

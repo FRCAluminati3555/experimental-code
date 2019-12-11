@@ -81,7 +81,7 @@ public final class AluminatiData {
     public static double minLookAheadSpeed = 12;
     public static double maxLookAheadSpeed = 120;
 
-    public static double inertiaSteeringGain = 1;
+    public static double inertiaSteeringGain = 0;
     public static double pathFollowingProfileKP = 1;
     public static double pathFollowingProfileKI = 0;
     public static double pathFollowingProfileKV = 0;
