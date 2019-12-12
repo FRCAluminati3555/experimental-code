@@ -281,9 +281,9 @@ public class AluminatiDrive implements AluminatiCriticalDevice {
     }
 
     /**
-     * Returns true if the marker has been reached
+     * Returns true if the marker has been passed
      */
-    public boolean hasReachedPathMarker(String marker) {
+    public boolean hasPassedPathMarker(String marker) {
         if (pathFollower == null) {
             return false;
         }
