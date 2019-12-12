@@ -256,7 +256,7 @@ public class AluminatiDrive implements AluminatiCriticalDevice {
      * @param timestamp
      */
     private synchronized void updatePathFollower(double timestamp) {
-        if (!pathFollower.isFinished()) {
+        if (pathFollower != null && !pathFollower.isFinished()) {
             Pose2d robotPose = robotState.getLatestFieldToVehicle().getValue();
             Twist2d command = pathFollower.update(timestamp, robotPose, robotState.getDistanceDriven(),
                     robotState.getPredictedVelocity().dx);
@@ -278,6 +278,17 @@ public class AluminatiDrive implements AluminatiCriticalDevice {
         }
 
         return pathFollower.isFinished();
+    }
+
+    /**
+     * Returns true if the marker has been reached
+     */
+    public boolean hasReachedPathMarker(String marker) {
+        if (pathFollower == null) {
+            return false;
+        }
+
+        return pathFollower.hasPassedMarker(marker);
     }
 
     /**
