@@ -128,9 +128,8 @@ public class Robot extends AluminatiRobot {
     };
 
     // Configure pure pursuit
-    AluminatiData.pathFollowingProfileKP = 2;
+    AluminatiData.pathFollowingProfileKP = 5;
     AluminatiData.pathFollowingProfileKI = 0.0001;
-    AluminatiData.inertiaSteeringGain = 0;
     AluminatiData.pathFollowingProfileKV = 0.007;
     AluminatiData.pathFollowingProfileKS = 0.076;
 
