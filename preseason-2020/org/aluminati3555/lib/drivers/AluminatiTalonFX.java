@@ -24,6 +24,8 @@ package org.aluminati3555.lib.drivers;
 
 /**
  * A wrapper class for the Talon FX
+ * 
+ * @author Caleb Heydon
  */
 public class AluminatiTalonFX extends AluminatiTalonSRX {
     /**
