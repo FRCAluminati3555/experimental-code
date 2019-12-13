@@ -60,7 +60,7 @@ public class ModeCharacterizeDrive implements AluminatiAutoTask {
 
         points.add(new DataPoint(
                 (driveSystem.getLeftVelocityInchesPerSecond() + driveSystem.getRightVelocityInchesPerSecond()) / 2,
-                power, timestamp - startTime));
+                power * 12, timestamp - startTime));
 
         if (power >= 1) {
             done = true;
