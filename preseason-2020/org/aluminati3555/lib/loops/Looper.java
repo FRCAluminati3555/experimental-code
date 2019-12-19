@@ -19,10 +19,8 @@ import java.util.List;
  */
 public class Looper {
     public final double kPeriod = AluminatiData.looperDT;
-    public final int kThreadPriority = AluminatiData.looperThreadPriority;
 
     private boolean mRunning;
-    private boolean mFirstRun;
 
     private final Notifier mNotifier;
     private final List<Loop> mLoops;
@@ -34,12 +32,6 @@ public class Looper {
         @Override
         public void runCrashTracked() {
             synchronized (mTaskRunningLock) {
-                if (mFirstRun) {
-                    Thread.currentThread().setPriority(kThreadPriority);
-                    Thread.currentThread().setName("Looper-Thread");
-                    mFirstRun = false;
-                }
-
                 if (mRunning) {
                     double now = Timer.getFPGATimestamp();
 
@@ -62,7 +54,6 @@ public class Looper {
     public Looper() {
         mNotifier = new Notifier(runnable_);
         mRunning = false;
-        mFirstRun = true;
         mLoops = new ArrayList<>();
     }
 

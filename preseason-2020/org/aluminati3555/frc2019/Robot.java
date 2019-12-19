@@ -90,7 +90,7 @@ public class Robot extends AluminatiRobot {
   // Power distribution
   private PowerDistributionPanel pdp;
 
-  // Joystick
+  // Joysticks
   private AluminatiJoystick driverJoystick;
   private AluminatiJoystick operatorJoystick;
 

@@ -94,5 +94,4 @@ public final class AluminatiData {
 
     // Loops
     public static double looperDT = 0.01;
-    public static int looperThreadPriority = Thread.MAX_PRIORITY;
 }
